@@ -104,3 +104,17 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Local generated output
+/[Bb]ulid/
+/.idea/
+
+
+# Preserve vendor archives and debug symbols shipped inside Assets
+!/[Aa]ssets/**/*.unitypackage
+!/[Aa]ssets/**/*.unitypackage.meta
+!/[Aa]ssets/**/*.pdb
+!/[Aa]ssets/**/*.pdb.meta
+
+# Third-party assets are restored separately
+/Assets/02.Assets/
