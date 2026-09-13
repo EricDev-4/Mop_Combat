@@ -2,11 +2,14 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 
+[DefaultExecutionOrder(-100)]
 public class PlayerSetup : MonoBehaviourPun
 {
     [SerializeField] private Movement movement;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject thirdPersonVisual;
+    public NetworkThirdPersonController thirdPersonController;
+    public GameObject personalHud;
 
     public string nickname;
     public TextMeshPro nicknameText;
@@ -18,6 +21,25 @@ public class PlayerSetup : MonoBehaviourPun
 
     private void ApplyPresentation(bool isLocalPlayer)
     {
+        if (thirdPersonController != null)
+        {
+            thirdPersonVisual.SetActive(true);
+            thirdPersonController.ConfigureOwnership(isLocalPlayer);
+            playerCamera.SetActive(isLocalPlayer);
+            foreach (Camera view in GetComponentsInChildren<Camera>(true))
+                view.enabled = isLocalPlayer;
+            foreach (AudioListener listener in GetComponentsInChildren<AudioListener>(true))
+                listener.enabled = isLocalPlayer;
+            foreach (ThirdPersonOrbitCamera orbit in GetComponentsInChildren<ThirdPersonOrbitCamera>(true))
+                orbit.enabled = isLocalPlayer;
+            foreach (Weapon weapon in GetComponentsInChildren<Weapon>(true))
+                weapon.enabled = isLocalPlayer;
+            if (personalHud != null) personalHud.SetActive(isLocalPlayer);
+            if (nameTagHolder != null) nameTagHolder.SetActive(!isLocalPlayer);
+            Health health = GetComponent<Health>();
+            if (health != null) health.isLocalPlayer = isLocalPlayer;
+            return;
+        }
         if (playerCamera == null || thirdPersonVisual == null)
             Debug.LogError("PlayerSetup requires both first-person and third-person roots.", this);
 

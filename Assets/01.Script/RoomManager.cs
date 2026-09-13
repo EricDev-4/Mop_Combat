@@ -85,6 +85,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         // PlayerSetup.Start가 로컬 플레이어 카메라를 켤 때까지 한 프레임 기다린다.
         yield return null;
 
+        if (spawnedPlayer == null) yield break;
         Camera playerView = spawnedPlayer.GetComponentInChildren<Camera>();
         if (playerView == null || !playerView.gameObject.activeInHierarchy)
         {
@@ -96,8 +97,32 @@ public class RoomManager : MonoBehaviourPunCallbacks
             roomCam.SetActive(false);
     }
 
+    private GameObject localPlayer;
+
+    public void RespawnPlayer(GameObject previousPlayer)
+    {
+        if (previousPlayer == null || !previousPlayer.TryGetComponent<PhotonView>(out var view) || !view.IsMine)
+            return;
+        previousPlayer.SetActive(false);
+        PhotonNetwork.Destroy(previousPlayer);
+        localPlayer = null;
+        GameObject replacement = SpawnPlayer();
+        if (replacement != null) StartCoroutine(SwitchToPlayerCamera(replacement));
+    }
+
+    public override void OnLeftRoom()
+    {
+        localPlayer = null;
+        if (roomCam != null) roomCam.SetActive(true);
+        if (nameUI != null) nameUI.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public GameObject SpawnPlayer()
     {
+        if (!PhotonNetwork.InRoom) return null;
+        if (localPlayer != null) return localPlayer;
         if (playerPb == null || spawnPoint == null || spawnPoint.Length == 0)
         {
             Debug.LogError("Player Prefab 또는 Spawn Point가 설정되지 않았습니다.", this);
@@ -110,6 +135,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             spawnPoint[spawnNum].position,
             spawnPoint[spawnNum].rotation);
 
+        localPlayer = spawnedPlayer;
         Health health = spawnedPlayer.GetComponent<Health>();
         if (health != null)
             health.isLocalPlayer = true;

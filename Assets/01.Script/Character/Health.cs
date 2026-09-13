@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -8,21 +6,26 @@ public class Health : MonoBehaviour
 {
     public int health;
     public bool isLocalPlayer;
-    [Header("UI")]
-    public TextMeshProUGUI  healthText;
-    
-    [PunRPC]
-    public void TakeDamage(int _damage)
-    {
-        health -= _damage;
-        healthText.text = health.ToString();
+    public TextMeshProUGUI healthText;
+    private bool dead;
 
-        if (health <= 0)
-        {
-            if(isLocalPlayer)
-                RoomManager.instance.SpawnPlayer();
-            Destroy(this.gameObject);
-        }
-            
+    private void Start() { RefreshUI(); }
+    private void RefreshUI()
+    {
+        if (healthText != null) healthText.text = health.ToString();
+    }
+
+    [PunRPC]
+    public void TakeDamage(int damage)
+    {
+        if (dead || damage <= 0) return;
+        health = Mathf.Max(0, health - damage);
+        RefreshUI();
+        if (health > 0) return;
+        dead = true;
+        PhotonView view = GetComponent<PhotonView>();
+        if (view == null || !view.IsMine) return;
+        if (RoomManager.instance != null) RoomManager.instance.RespawnPlayer(gameObject);
+        else PhotonNetwork.Destroy(gameObject);
     }
 }

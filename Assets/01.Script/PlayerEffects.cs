@@ -7,10 +7,11 @@ public class PlayerEffects : MonoBehaviourPun
     [SerializeField] private Transform thirdPersonMuzzle;
     [SerializeField] private GameObject muzzleFlashPrefab;
     [SerializeField] private GameObject hitEffectPrefab;
+    public bool thirdPerson;
 
     private void Start()
     {
-        if (firstPersonMuzzle == null || thirdPersonMuzzle == null ||
+        if ((!thirdPerson && firstPersonMuzzle == null) || thirdPersonMuzzle == null ||
             muzzleFlashPrefab == null || hitEffectPrefab == null)
             Debug.LogError("PlayerEffects requires both muzzle points and effect prefabs.", this);
     }
@@ -34,7 +35,7 @@ public class PlayerEffects : MonoBehaviourPun
     [PunRPC]
     private void RPC_MuzzleFlash()
     {
-        Transform muzzle = photonView.IsMine ? firstPersonMuzzle : thirdPersonMuzzle;
+        Transform muzzle = thirdPerson || !photonView.IsMine ? thirdPersonMuzzle : firstPersonMuzzle;
         if (muzzle == null || muzzleFlashPrefab == null)
             return;
 
