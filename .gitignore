@@ -118,3 +118,10 @@ InitTestScene*.unity*
 
 # Third-party assets are restored separately
 /Assets/02.Assets/
+
+# Machine-local agent connections and generated discovery cache
+/.mcp.json
+/.kimi-code/mcp.json
+/.revvy/revvy-proxy.json
+/.revvy/tools-manifest.json
+/Packages/com.revstudio.revvy-unity/.revvy-bridge.json

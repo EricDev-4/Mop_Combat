@@ -1,0 +1,23 @@
+{
+  "name": "com.revstudio.revvy-unity",
+  "version": "0.2.0",
+  "displayName": "Revvy Unity Bridge",
+  "description": "Revvy editor bridge for Unity. Hosts a project-scoped, signed loopback MCP bridge so the Revvy proxy, CLI, and Reddy can drive the Unity Editor. Editor-only, no runtime cost, no external dependencies.",
+  "unity": "6000.3",
+  "documentationUrl": "https://github.com/RevStudio/Revvy/tree/main/Bridges/Unity",
+  "changelogUrl": "https://github.com/RevStudio/Revvy/blob/main/Bridges/Unity/com.revstudio.revvy-unity/CHANGELOG.md",
+  "licensesUrl": "https://github.com/RevStudio/Revvy/blob/main/LICENSE",
+  "keywords": [
+    "mcp",
+    "revvy",
+    "ai",
+    "automation",
+    "editor",
+    "tooling"
+  ],
+  "author": {
+    "name": "RevStudio",
+    "url": "https://github.com/RevStudio"
+  },
+  "hideInEditor": false
+}
